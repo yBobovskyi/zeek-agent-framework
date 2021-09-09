@@ -15,7 +15,7 @@ export {
 		action:         string &log;
 		pid:            int    &log;
 		fd:             int    &log;
-		path:           string &log;
+		exe:            string &log;
 		local_address:  addr   &log &default=0.0.0.0;
 		remote_address: addr   &log &default=0.0.0.0;
 		local_port:     int    &log;
@@ -25,7 +25,7 @@ export {
 }
 
 event Agent_SocketOpen::socket_open(result: ZeekAgent::Result,
-                                    action: string, pid: int, fd: int, path: string,
+                                    action: string, pid: int, fd: int, exe: string,
                                     local_address: string, remote_address: string,
                                     local_port: int, remote_port: int,
                                     host_time: int, success: int)
@@ -41,7 +41,7 @@ event Agent_SocketOpen::socket_open(result: ZeekAgent::Result,
 	                  $pid = pid,
 	                  $action = action,
 	                  $fd = fd,
-	                  $path = path,
+	                  $exe = exe,
 	                  $local_port = local_port,
 	                  $remote_port = remote_port,
 	                  $success = success);
@@ -60,7 +60,7 @@ event zeek_init() &priority=10
 	Log::create_stream(LOG, [$columns=Info, $path="agent-sockets_opening"]);
 
 	local query = ZeekAgent::Query($ev=Agent_SocketOpen::socket_open,
-	                                $query="SELECT action, pid, fd, path, local_address, remote_address, local_port, remote_port, time, success FROM socket_events WHERE family=2",
+	                                $query="SELECT syscall, pid, fd, exe, local_address, remote_address, local_port, remote_port, time, success FROM socket_events WHERE family=2",
 	                                $utype=ZeekAgent::ADD);
 	ZeekAgent::subscribe(query);
 	}

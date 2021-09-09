@@ -50,7 +50,7 @@ event zeek_init() &priority=10
 	Log::create_stream(LOG, [$columns=Info, $path="agent-process_events"]);
 	
 	local query = ZeekAgent::Query($ev=Agent_ProcessStart::process_start,
-	                                $query="SELECT pid, path, cmdline, cwd, uid, gid, time, parent FROM process_events",
+	                                $query="SELECT pid, path, cmdline, cwd, uid, gid, time, ppid FROM process_events",
 	                                $utype=ZeekAgent::ADD);
 	ZeekAgent::subscribe(query);
 	}
